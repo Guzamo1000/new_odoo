@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <include file="views/menu.xml"/>
+    <includefile="views/ot_registration.xml"/>
+
+</odoo>

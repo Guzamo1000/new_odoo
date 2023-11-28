@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="ot_category" model="ir.module.category">
+        <field name="name">ot</field>
+        <field name="sequence">1</field>
+    </record>
+    <record id="groups_employee" model="res.groups">
+        <field name="name">Employee</field>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        <field name="category_id" ref="ot_category" />
+        
+    </record>
+    <record id="groups_manager_approve" model="res.groups">
+        <field name="name">Manager</field>
+        <field name="implied_ids" eval="[(4, ref('groups_employee'))]"/>
+        <field name="category_id" ref="ot_category" />
+    </record>
+    <record id="groups_dl" model="res.groups">
+        <field name="name">DL</field>
+        <field name="implied_ids" eval="[(4, ref('groups_manager_approve'))]" />
+        <field name="category_id" ref="ot_category" />
+        <!-- <field name="users" eval="[(4, ref('base.u]" /> -->
+    </record>
+    
+    <!-- employee -->
+    <record id="employee_role_registration" model="ir.rule">
+        <field name="name">role employee in ot registration</field>
+        <field name="model_id" ref="model_ot_registration"/>
+        <field name="groups" eval="[(4, ref('groups_employee'))]"/>
+        <field name="domain_force">[('create_uid', '=', user.id)]</field>
+
+    </record>
+    <record id="employee_role_ot" model="ir.rule">
+        <field name="name">role employee in ot</field>
+        <field name="model_id" ref="model_ot"/>
+        <field name="groups" eval="[(4, ref('groups_employee'))]"/>
+        <field name="domain_force">[('create_uid', '=', user.id)]</field>
+
+    </record>
+    
+
+    <!-- pm -->
+    <record id="pm_approve_role_ot_registration" model="ir.rule">
+        <field name="name">role pm ot regitration</field>
+        <field name="model_id" ref="model_ot_registration"/>
+        <field name="groups" eval="[(4, ref('groups_manager_approve'))]"/>
+        <field name="domain_force">[('project_id.user_id',"=",user.id)]</field>
+
+    </record>
+    <record id="pm_approve_role_ot" model="ir.rule">
+        <field name="name">role pm ot</field>
+        <field name="model_id" ref="model_ot"/>
+        <field name="groups" eval="[(4, ref('groups_manager_approve'))]"/>
+        <field name="domain_force">[('project_name.user_id',"=",user.id),('state','!=',"draft")]</field>
+
+    </record>
+
+    <!-- dl -->
+    <record id="dl_approve_role_ot_registration" model="ir.rule">
+        <field name="name">role DL ot regitration</field>
+        <field name="model_id" ref="model_ot_registration"/>
+        <field name="groups" eval="[(4, ref('groups_dl'))]"/>
+        <field name="domain_force">[('manage.user_id',"=",user.id),'|',('state','!=','draft')]</field>
+
+    </record>
+    <record id="dl_approve_role_ot" model="ir.rule">
+        <field name="name">role DL ot</field>
+        <field name="model_id" ref="model_ot"/>
+        <field name="groups" eval="[(4, ref('groups_dl'))]"/>
+        <field name="domain_force">[('manager_deparment.user_id',"=",user.id),'|', ('state','!=','draft')]</field>
+
+    </record>
+</odoo>

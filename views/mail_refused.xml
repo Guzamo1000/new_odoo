@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+        <record id="send_mail_refused_employee" model="mail.template">
+            <field name="name">EMAIL REFUSED</field>
+            <field name="model_id" ref='model_ot_registration' />
+            <field name="email_from">${object.manage.id}</field>
+            <field name="email_to">${object.employee.id}</field>
+            <field name="subject">OT request</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                        <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                            Dear ${object.employee.name}
+                            <br /><br />
+                            ${object.manage.name} has been refused OT request.
+                            <br /><br />
+                            
+                            Regards
+                        </p>
+                    </div>
+            </field>
+        </record>
+</odoo>

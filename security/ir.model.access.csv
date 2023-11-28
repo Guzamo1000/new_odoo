@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_ot_management_ot_management,ot_management.ot_management,model_ot_registration,,1,1,1,1
+access_ot_employee,ot_employee.ot_employee,model_ot,,1,1,1,1

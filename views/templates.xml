@@ -1,0 +1,71 @@
+<odoo>
+    <data>
+        <!-- <template id="listing"> -->
+        <!--   <ul> -->
+        <!--     <li t-foreach="objects" t-as="object"> -->
+        <!--       <a t-attf-href="#{ root }/objects/#{ object.id }"> -->
+        <!--         <t t-esc="object.display_name"/> -->
+        <!--       </a> -->
+        <!--     </li> -->
+        <!--   </ul> -->
+        <!-- </template> -->
+        <!-- <template id="object"> -->
+        <!--   <h1><t t-esc="object.display_name"/></h1> -->
+        <!--   <dl> -->
+        <!--     <t t-foreach="object._fields" t-as="field"> -->
+        <!--       <dt><t t-esc="field"/></dt> -->
+        <!--       <dd><t t-esc="object[field]"/></dd> -->
+        <!--     </t> -->
+        <!--   </dl> -->
+        <!-- </template> -->
+
+
+        <template id="ot_registration_page" name="ot registration">
+            <t t-call="website.layout">
+                <div class="container"> 
+                    <a t-attf-href="/web?#id={{url}}">Create</a>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>id</th>
+                                <th>Project</th>
+                                <th>Employee</th>
+                                <th>Approve</th>
+                                <th>Total OT</th>
+                                <th>State</th>
+                                <th>function</th>
+                            </tr>
+                            
+                        </thead>
+                        <tbody>
+                                <t t-foreach="ot" t-as="o">
+                                    <tr>
+                                        <td>
+                                            <t t-esc="o.project_id.name"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="o.employee.name"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="o.approver.name"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="o.total_ot"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="o.state"/>
+                                        </td>
+                                        <td>
+                                            <a t-attf-href="/web?#id={{o.id}}{{url}}" >edit</a>
+                                        </td>
+                                    </tr>
+                                    
+                                </t>
+                        </tbody>    
+                    </table>
+                    
+                </div>
+            </t>
+        </template>
+    </data>
+</odoo>
