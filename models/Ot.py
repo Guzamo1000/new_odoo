@@ -23,22 +23,13 @@ class Ot(models.Model):
 
     
 
-    # @api.depends("ot_registration_id.project_id")
-    # def get_project_id(self):
-    #     """"""
-    #     for record in self:
-    #         record.project_name = record.ot_registration_id.project_id.id
-    #         record.employee = record.ot_registration_id.employee.id
-    #         record.manage_approve = record.ot_registration_id.approver.id
-
+   
     @api.onchange("start_ot", "end_ot")
     def _change_total_house(self):
         """
         Calculate the total number of hours Ot
         """
-        print(f"start ot: {self.start_ot}")
-        print(f"end ot: {self.end_ot}")
-        print(f"type: {type(self.end_ot)}")
+        
         for record in self:
 
             if record.start_ot and record.end_ot and record.end_ot > record.start_ot:
@@ -65,8 +56,7 @@ class Ot(models.Model):
                     date_end = end_ot.date()
                     time_start = start_ot.time()
                     time_end = end_ot.time()
-                    print(f"start_ot day: {start_ot.day}")
-                    print(f"end_ot day: {end_ot.day}")
+                    
                     if date_start == date_end:
                         if date_start.weekday() == 5 and date_end.weekday() == 5:
                             record.ot_category = "Thứ 7"
