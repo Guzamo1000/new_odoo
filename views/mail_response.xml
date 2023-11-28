@@ -13,7 +13,7 @@
                             <br /><br />
                             ${object.manage.name} has been approve OT request.
                             <br /><br />
-                            
+                            <a href="/ot_management/ot_registration_detail/${object.id}">infor here</a>
                             Regards
                         </p>
                     </div>

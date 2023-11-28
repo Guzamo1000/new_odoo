@@ -197,7 +197,8 @@
         <field name="url">http://localhost:8069/vi_VN/ot_management/ot_registration/</field>
         <field name="target">new</field>
     </record>
-    <menuitem id="ot_management_menu" name="OT management" sequence="1" active="False"/>
+
+    <menuitem id="ot_management_menu" name="OT management" sequence="1"/>
     <menuitem id="ot_registration_menu" name="My OT Registration" parent="ot_management_menu"/>
     
     

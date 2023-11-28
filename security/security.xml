@@ -23,7 +23,7 @@
         <!-- <field name="users" eval="[(4, ref('base.u]" /> -->
     </record>
     
-    <!-- employee -->
+    employee
     <record id="employee_role_registration" model="ir.rule">
         <field name="name">role employee in ot registration</field>
         <field name="model_id" ref="model_ot_registration"/>
@@ -61,14 +61,14 @@
         <field name="name">role DL ot regitration</field>
         <field name="model_id" ref="model_ot_registration"/>
         <field name="groups" eval="[(4, ref('groups_dl'))]"/>
-        <field name="domain_force">[('manage.user_id',"=",user.id),'|',('state','!=','draft')]</field>
+        <field name="domain_force">[('manage.user_id',"=",user.id),('state','!=','draft')]</field>
 
     </record>
     <record id="dl_approve_role_ot" model="ir.rule">
         <field name="name">role DL ot</field>
         <field name="model_id" ref="model_ot"/>
         <field name="groups" eval="[(4, ref('groups_dl'))]"/>
-        <field name="domain_force">[('manager_deparment.user_id',"=",user.id),'|', ('state','!=','draft')]</field>
+        <field name="domain_force">[('manager_deparment.user_id',"=",user.id), ('state','!=','draft')]</field>
 
     </record>
 </odoo>

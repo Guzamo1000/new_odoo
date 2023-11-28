@@ -13,7 +13,7 @@
                             <br /><br />
                             ${object.employee.name} has been submitted OT request.
                             <br /><br />
-                            
+                            <a href="/ot_management/ot_registration_detail/${object.id}">infor here</a>
                             Regards
                         </p>
                     </div>
