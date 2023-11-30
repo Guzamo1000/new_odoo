@@ -16,9 +16,8 @@ class Ot_registration(models.Model):
         """
         get manage in user current
         """
-        # print(f"manage.user_id: {self.manage.user_id}")
-        # print("QU")
         for record in self:
+<<<<<<< HEAD
             id_user=record.employee.parent_id.id
             # print(f"id_user {id_user}")
             record.manage=id_user
@@ -26,6 +25,11 @@ class Ot_registration(models.Model):
             # print(f"manage.user_id: {record.manage.user_id}")
             # print(f"user id: {self.env.user.id}")
             # record.approver=record.manage
+=======
+            id_user=record.employee.parent_id
+            record.manage=id_user
+
+>>>>>>> 43c776c9ace642351ae39aeb8d38963a58a9fd85
     @api.onchange("ot_id.total_hours","ot_id")
     def _onchange_total_ot(self):
         """
