@@ -19,10 +19,10 @@ class Ot_registration(models.Model):
         # print(f"manage.user_id: {self.manage.user_id}")
         # print("QU")
         for record in self:
-            id_user=record.employee.parent_id
+            id_user=record.employee.parent_id.id
             # print(f"id_user {id_user}")
             record.manage=id_user
-            # print(f"manage: {record.manage}")
+            print(f"manage: {record.manage}")
             # print(f"manage.user_id: {record.manage.user_id}")
             # print(f"user id: {self.env.user.id}")
             # record.approver=record.manage
@@ -41,19 +41,21 @@ class Ot_registration(models.Model):
         list_start_ot=self.ot_id.mapped('start_ot')
         data=self.env['ot'].search([])
         print(f"data: {data}")
-        # list_end_ot=self.ot_id.mapped('end_ot')
+        list_end_ot=self.ot_id.mapped('end_ot')
         print(f"list start ot: {list_start_ot}")
-        for r in range(1,len(list_start_ot)):
-            if list_start_ot[r].month!=list_start_ot[r-1].month:
+        for r in range(1,len(data)):
+            if data[r]['start_ot'].month!=data[r-1]['start_ot'].month:
                 raise ValidationError(_("The months in from and to or records must be the same"))
-    
+            # if (list_start_ot[r].day==list_start_ot[r-1] and ) or (list_end_ot[r].day==list_end_ot[r])
 
     @api.constrains("ot_id.end_ot", "ot_id")
     def constrains_end_date(self):
         """
         vali
         """
+        # for 
         list_ot=self.ot_id.read()
+        # print(f"list_ot")
         for ot in list_ot:
             if ot["start_ot"]>=ot["end_ot"]:
                 print(f"ot: {ot}")
@@ -61,8 +63,9 @@ class Ot_registration(models.Model):
     @api.constrains("ot_id.ot_category", "ot_id")
     def constrain_ot_category(self):
         for r in self:
-            if r.ot_id.ot_category=="Không thể xác định":
-                raise ValidationError(_("Category Không thể xác định"))
+            for ot in r.ot_id:
+                if ot.ot_category=="Không thể xác định":
+                    raise ValidationError(_("Category Không thể xác định"))
 
     @api.onchange('ot_id.start_ot', 'ot_id.end_ot','ot_id')
     def _onchange_ot_month(self):
@@ -72,6 +75,7 @@ class Ot_registration(models.Model):
         if len(self.ot_id.mapped("start_ot"))>0:
             _start_ot=self.ot_id.mapped("start_ot")[0]
             _end_ot=self.ot_id.mapped('end_ot')[0]
+            print(f"end_ot {self.ot_id.mapped('end_ot')} " )
             if _start_ot and _end_ot:
                 if _start_ot.month==_end_ot.month:
                     # print(f"")
@@ -97,7 +101,7 @@ class Ot_registration(models.Model):
             record.state = 'approve'
             for r in record.ot_id:
                 r.state=record.state
-            template.send_mail(record.id)        
+        template.send_mail(record.id)        
 
 
     @api.multi
@@ -124,16 +128,29 @@ class Ot_registration(models.Model):
                 r.state=record.state
             template.send_mail(record.id)
 
+    @api.multi
+    def to_draft(self):
+        for record in self:
+            record.state="draft"
+            for r in record.ot_id:
+                r.state=record.state
 
-
-
-
+    @api.multi
+    def write(self,vals):
+        print(f"vals: {vals}")
+        for r in self:
+            if r.state!='draft':
+                for key in vals:
+                    if key!='state':
+                        raise ValidationError(_("You cannot edit when state!='draft'")) 
+        return super(Ot_registration, self).write(vals)
+    
 
     project_id=fields.Many2one("project.project", string="Project", required=True)
     ot_id=fields.One2many('ot', 'ot_registration_id', string='ot id',ondelete='casade', required=True)
     approver=fields.Many2one("hr.employee",string="Approver")
     employee=fields.Many2one("hr.employee", string="employee", default=get_user_current, tracking=True)
-    manage=fields.Many2one("hr.employee",string="manage")
+    manage=fields.Many2one("hr.employee",string="Manage",compute_sudo=True)
     ot_month=fields.Char("OT Month")
     total_ot=fields.Integer(string="Total OT")
     month_first_line=fields.Datetime()
@@ -150,12 +167,12 @@ class Ot_registration(models.Model):
                 print(f"total_ot in ot registration: {self.total_ot}")
             else: self.approver=None
 
-    @api.model
-    def get_user_current(self):
-        """
-        get current user
-        """
-        return self.env["hr.employee"].search([("user_id","=",self.env.uid)])
+    # @api.model
+    # def get_user_current(self):
+    #     """
+    #     get current user
+    #     """
+    #     return self.env["hr.employee"].search([("user_id","=",self.env.uid)])
     
     
     

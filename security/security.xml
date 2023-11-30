@@ -45,9 +45,21 @@
         <field name="name">role pm ot regitration</field>
         <field name="model_id" ref="model_ot_registration"/>
         <field name="groups" eval="[(4, ref('groups_manager_approve'))]"/>
-        <field name="domain_force">[('project_id.user_id',"=",user.id)]</field>
+        <field name="domain_force">[('project_id.user_id',"=",user.id),("state",'!=','draft')]</field>
 
     </record>
+
+    <record id="pm_block_edit_role_ot_registration" model="ir.rule">
+        <field name="name">pm block edit role ot registration</field>
+        <field name="model_id" ref="model_ot_registration"/>
+        <field name="groups" eval="[(4, ref('groups_manager_approve'))]"/>
+        <field eval="False" name="perm_unlink"/>
+        <field eval="False" name="perm_write"/>
+        <field eval="True" name="perm_read"/>
+        <field eval="True" name="perm_create"/>
+        <field name="domain_force">[('state','!=','draft')]</field> 
+    </record>
+
     <record id="pm_approve_role_ot" model="ir.rule">
         <field name="name">role pm ot</field>
         <field name="model_id" ref="model_ot"/>
@@ -55,20 +67,52 @@
         <field name="domain_force">[('project_name.user_id',"=",user.id),('state','!=',"draft")]</field>
 
     </record>
+    <record id="pm_block_edit_role_ot" model="ir.rule">
+        <field name="name">pm block edit role ot</field>
+        <field name="model_id" ref="model_ot"/>
+        <field name="groups" eval="[(4, ref('groups_manager_approve'))]"/>
+        <field eval="False" name="perm_unlink"/>
+        <field eval="False" name="perm_write"/>
+        <field eval="True" name="perm_read"/>
+        <field eval="True" name="perm_create"/>
+        <field name="domain_force">[('state','!=','draft')]</field> 
+    </record>
+    
 
     <!-- dl -->
     <record id="dl_approve_role_ot_registration" model="ir.rule">
         <field name="name">role DL ot regitration</field>
         <field name="model_id" ref="model_ot_registration"/>
         <field name="groups" eval="[(4, ref('groups_dl'))]"/>
-        <field name="domain_force">[('manage.user_id',"=",user.id),('state','!=','draft')]</field>
+        <field name="domain_force">[('manage.user_id.id',"=",user.id),("state",'!=','draft')]</field>
 
+    </record>
+    
+    <record id="dl_block_edit_role_ot_registration" model="ir.rule">
+        <field name="name">dl block edit role ot registration</field>
+        <field name="model_id" ref="model_ot_registration"/>
+        <field name="groups" eval="[(4, ref('groups_dl'))]"/>
+        <field eval="False" name="perm_unlink"/>
+        <field eval="False" name="perm_write"/>
+        <field eval="True" name="perm_read"/>
+        <field eval="True" name="perm_create"/>
+        <field name="domain_force">[('state','!=','draft')]</field> 
     </record>
     <record id="dl_approve_role_ot" model="ir.rule">
         <field name="name">role DL ot</field>
         <field name="model_id" ref="model_ot"/>
         <field name="groups" eval="[(4, ref('groups_dl'))]"/>
-        <field name="domain_force">[('manager_deparment.user_id',"=",user.id), ('state','!=','draft')]</field>
+        <field name="domain_force">[('manager_deparment.user_id',"=",user.id),("state",'!=','draft')]</field>
 
+    </record>
+    <record id="dl_block_edit_role_ot" model="ir.rule">
+        <field name="name">dl block edit role ot</field>
+        <field name="model_id" ref="model_ot"/>
+        <field name="groups" eval="[(4, ref('groups_dl'))]"/>
+        <field eval="False" name="perm_unlink"/>
+        <field eval="False" name="perm_write"/>
+        <field eval="True" name="perm_read"/>
+        <field eval="True" name="perm_create"/>
+        <field name="domain_force">[('state','!=','draft')]</field> 
     </record>
 </odoo>

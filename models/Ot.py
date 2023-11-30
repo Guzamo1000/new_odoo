@@ -56,32 +56,33 @@ class Ot(models.Model):
                 
                 start_ot = record.start_ot + self.utc_offset()
                 end_ot = record.end_ot + self.utc_offset()
-                timenow = datetime.now()
-                
-                if start_ot > end_ot or end_ot.day>=(timenow.day-2):
+                timenow = datetime.now().date()
+                timenow=datetime.combine(timenow,time(23,59,59))
+                print(f"start_ot: {start_ot}")
+                print(f"end_ot: {end_ot}")
+                if start_ot > end_ot or (timenow-start_ot).days>2:
+                    print(f"Quá thời gian: {(timenow-start_ot).days}")
                     record.ot_category = "Không thể xác định"
                 else:
                     date_start = start_ot.date()
                     date_end = end_ot.date()
                     time_start = start_ot.time()
                     time_end = end_ot.time()
-                    print(f"start_ot day: {start_ot.day}")
-                    print(f"end_ot day: {end_ot.day}")
                     if date_start == date_end:
+                        # print(f"day: {date_}")
                         if date_start.weekday() == 5 and date_end.weekday() == 5:
                             record.ot_category = "Thứ 7"
                         elif date_start.weekday() == 6 and date_end.weekday() == 6:
                             record.ot_category = "Chủ nhật"
-                            if time_start > time(17, 30, 00) and time_end < time(23, 59, 59):
-                                record.ot_category = "Ngày cuối tuần ban đêm"
+                            # if time_start > time(18, 30, 00) and time_end < time(23, 59, 59):
+                            #     record.ot_category = "Ngày cuối tuần ban đêm"
                         else:
                             if (time_start >= time(6, 00, 00)) and (time_end <= time(8, 30, 00)):
                                 record.ot_category = "OT ban ngày"
                             elif (time_start >= time(18, 30, 00)) and (time_end <= time(22, 00, 00)):
                                 print("NGÀY BÌNH THƯỜNG")
                                 record.ot_category = "Ngày bình thường"
-                            elif time_start >= time(18, 30, 00) and time_end <= time(23, 59, 59) and time_end >= time(
-                                    22, 00, 00):
+                            elif (time_start >= time(22,0,0) and  time_end <= time(23, 59, 59)) or (time_start>=time(0,0,0) and time_end<=time(6,0,0)) :
                                 record.ot_category = "Ngày bình thường - ban đêm"
 
                             else:
@@ -90,7 +91,10 @@ class Ot(models.Model):
                         
                         if (time_start >= time(18, 30, 00) and time_start <= time(23, 59, 59)) and (
                                 time_end >= time(00, 00, 00) and time_end <= time(6, 00, 00)):
-                            record.ot_category = "Ngày bình thường - ban đêm"
+                            if date_start.weekday()==6 and date_end.weekday()==0:
+                                record.ot_category="Ngày cuối tuần-ban đêm"
+                            else:
+                                record.ot_category = "Ngày bình thường - ban đêm"
 
                         else:
                             record.ot_category = "Không thể xác định"
@@ -99,6 +103,30 @@ class Ot(models.Model):
                    
             else:
                 record.ot_category = "Không thể xác định"
+
+    @api.constrains("start_ot", "end_ot")
+    def check_month(self):
+        data=self.env['ot'].search([])
+        print(f"data: {self}")
+        for r in range(len(self)):
+            start_ot_r=(self[r]['start_ot']+self.utc_offset())
+            end_ot_r=(self[r]['end_ot']+self.utc_offset())
+            for i in range(r+1,len(self)):
+                start_ot_i=(self[i]['start_ot']+self.utc_offset())
+                end_ot_i=self[i]['end_ot']+self.utc_offset()    
+                if start_ot_r.month!=start_ot_i.month:
+                    raise ValidationError(_("The months in from and to or records must be the same"))
+                print(f"r: {start_ot_r.day} and i {start_ot_i.day} ")
+                if start_ot_r.day==start_ot_i.day:
+                    print(f"r: {self[r]['ot_category']} and i {self[i]['ot_category']} ")
+                    if self[r]['state']==self[i]['state']:
+                        if (start_ot_i>=start_ot_r and start_ot_i<=end_ot_r) or (end_ot_i>=start_ot_r and end_ot_i<=end_ot_r) or (start_ot_r>=start_ot_i and start_ot_r<=end_ot_i) or (end_ot_r>=start_ot_i and end_ot_r<=end_ot_i) : 
+                            print(f"start_ot_i: {self[i]['start_ot']} and end_ot_i: {self[i]['end_ot']}")
+                            print(f"start_ot_r: {self[r]['start_ot']} and end_ot_r: {self[r]['end_ot']}")
+                        # if self[r]['']
+                            raise ValidationError(_("Same time ot"))
+
+    
 
     start_ot = fields.Datetime(string="From", default=datetime.now(), required=True)
     end_ot = fields.Datetime(string="to", default=datetime.now(),required=True)
